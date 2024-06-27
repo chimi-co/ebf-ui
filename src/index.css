@@ -2,8 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn {
+    @apply py-3 px-6 rounded-full font-normal uppercase leading-none;
+  }
+  .btn-primary {
+    @apply bg-primary text-white;
+  }
+  .btn-secondary {
+    @apply bg-secondary text-black;
+  }
+  .btn-transparent {
+    @apply bg-transparent border border-primary text-primary;
+  }
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  @apply font-sans;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
