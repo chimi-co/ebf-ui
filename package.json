@@ -11,8 +11,12 @@
     "deploy": "vite build && firebase deploy"
   },
   "dependencies": {
+    "@privy-io/react-auth": "^1.71.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.23.1",
+    "viem": "^2.15.1",
+    "web3": "^4.10.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
