@@ -1,12 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { PrivyProvider } from '@privy-io/react-auth';
-import AppRouter from "./router/AppRouter";
+import { PrivyProvider } from '@privy-io/react-auth'
+import { Provider } from 'react-redux'
+import {baseSepolia, sepolia} from 'viem/chains'
 
-import {sepolia } from 'viem/chains'
+import store from './store'
+
+import AppRouter from "./router/AppRouter"
 
 import './index.css'
-
 
 const id = 'clxkss0ur055pocmvq6cdo1xk'
 const config = {
@@ -17,13 +19,15 @@ const config = {
   embeddedWallets: {
     createOnLogin: 'users-without-wallets' // defaults to 'off'
   },
-  supportedChains: [sepolia],
+  supportedChains: [sepolia, baseSepolia],
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <PrivyProvider appId={id} config={config} >
-      <AppRouter />
+    <PrivyProvider appId={id} config={config}>
+      <Provider store={store}>
+        <AppRouter />
+      </Provider>
     </PrivyProvider>
   </React.StrictMode>,
 )

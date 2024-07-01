@@ -15,6 +15,9 @@
   .btn-transparent {
     @apply bg-transparent border border-primary text-primary;
   }
+  .btn-text {
+    @apply bg-transparent hover:bg-primary transition duration-300 ease-in-out;
+  }
 }
 
 :root {
@@ -29,4 +32,10 @@
 
 body {
   min-height: 100vh;
+}
+
+
+.relative:hover .absolute {
+  opacity: 1;
+  visibility: visible;
 }
