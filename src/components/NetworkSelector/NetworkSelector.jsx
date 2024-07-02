@@ -26,7 +26,7 @@ export default function () {
     >
       <button
         className="btn btn-text flex">
-        {chain?.name}
+        {chain?.name ?? 'UNKNOW NETWORK'}
         <ChevronDownIcon className="h-3 w-3 ml-2" />
       </button>
       {
@@ -45,7 +45,6 @@ export default function () {
                 </button>
               ))
             }
-
           </div>
         )
       }

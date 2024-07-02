@@ -59,7 +59,13 @@ export default function Home() {
             <p>Account balance: {balance} ETH</p>
             <p>eip155: {chain?.eip155}</p>
           </div>
-          <button className="btn btn-primary" onClick={handleAttestation}>Attest</button>
+          <button
+            disabled={user && !chain}
+            className="btn btn-primary"
+            onClick={handleAttestation}
+          >
+            Attest
+          </button>
         </>
       }
     </>
