@@ -3,8 +3,9 @@ import {usePrivy, useWallets} from "@privy-io/react-auth"
 import {useEffect, useState} from "react"
 
 import {useDispatch, useSelector} from "react-redux"
-import {setChain, setWalletAddress, setWeb3} from "../../store"
-import {attest, getAccountBalance} from "../../services/BlockchainService"
+import {setChain, setProvider, setWalletAddress, setWeb3} from "../../store"
+import {attest, delegatedAttestationRequest, getAccountBalance} from "../../services/BlockchainService"
+import {CONTRACT_CONFIG} from "../../constants/config";
 
 const chains = [
   {eip155: 11155111, name: 'Sepolia'},
@@ -24,9 +25,10 @@ export default function Home() {
   useEffect(() => {
     const getProvider = async () => {
       const wallet = wallets[0]
-      const provider = await wallet?.getEthereumProvider()
-      const web3Instance = new Web3(provider);
+      const provider = await wallet?.getEthersProvider()
+      const web3Instance = new Web3(provider)
 
+      dispatch(setProvider(provider))
       dispatch(setWeb3(web3Instance))
       dispatch(setWalletAddress(wallet.address))
       dispatch(setChain(chains.find(item => item.eip155 === Number(wallet.chainId.split(':')[1]))))
@@ -48,6 +50,8 @@ export default function Home() {
 
   const handleAttestation = async () => await attest()
 
+  const handleDelegatedAttestation = async () => await delegatedAttestationRequest()
+
   return(
     <>
       <h2 className="text-2xl font-semibold mb-4">Main Content</h2>
@@ -58,6 +62,8 @@ export default function Home() {
             <p>Wallet address: {user?.wallet?.address}</p>
             <p>Account balance: {balance} ETH</p>
             <p>eip155: {chain?.eip155}</p>
+            <p>EAS contract: {CONTRACT_CONFIG[chain?.eip155].EAS_CONTRACT_ADDRESS}</p>
+            <p>SchemaId: {CONTRACT_CONFIG[chain?.eip155].SCHEMA_ID}</p>
           </div>
           <button
             disabled={user && !chain}
@@ -65,6 +71,13 @@ export default function Home() {
             onClick={handleAttestation}
           >
             Attest
+          </button>
+          <button
+            disabled={user && !chain}
+            className="btn btn-primary"
+            onClick={handleDelegatedAttestation}
+          >
+            Delegated Attest
           </button>
         </>
       }
