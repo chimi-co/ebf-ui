@@ -6,7 +6,6 @@ const appSlice = createSlice({
     chain: {eip155: 11155111, name: 'Sepolia'},
     provider: null,
     walletAddress: null,
-    web3: null,
   },
   reducers: {
     setChain: (state, action) => {
@@ -18,13 +17,10 @@ const appSlice = createSlice({
     setWalletAddress: (state, action) => {
       state.walletAddress = action.payload
     },
-    setWeb3: (state, action) => {
-      state.web3 = action.payload
-    },
   }
 });
 
-export const { setChain, setProvider, setWalletAddress, setWeb3 } = appSlice.actions
+export const { setChain, setProvider, setWalletAddress } = appSlice.actions
 
 const store = configureStore({
   reducer: {
