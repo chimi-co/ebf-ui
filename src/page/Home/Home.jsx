@@ -1,11 +1,12 @@
-import Web3 from 'web3'
 import {usePrivy, useWallets} from "@privy-io/react-auth"
+import {BrowserProvider} from "ethers"
 import {useEffect, useState} from "react"
-
 import {useDispatch, useSelector} from "react-redux"
-import {setChain, setProvider, setWalletAddress, setWeb3} from "../../store"
+
 import {attest, delegatedAttestationRequest, getAccountBalance} from "../../services/BlockchainService"
-import {CONTRACT_CONFIG} from "../../constants/config";
+import {setChain, setProvider, setWalletAddress} from "../../store"
+
+import {CONTRACT_CONFIG} from "../../constants/config"
 
 const chains = [
   {eip155: 11155111, name: 'Sepolia'},
@@ -13,23 +14,21 @@ const chains = [
 ]
 
 export default function Home() {
-
   const dispatch = useDispatch()
   const { user } = usePrivy()
   const {wallets} = useWallets()
 
   const [balance, setBalance] = useState(0)
   const chain = useSelector((state) => state.app.chain)
-  const web3 = useSelector((state) => state.app.web3)
+  const provider = useSelector((state) => state.app.provider)
 
   useEffect(() => {
     const getProvider = async () => {
       const wallet = wallets[0]
-      const provider = await wallet?.getEthersProvider()
-      const web3Instance = new Web3(provider)
+      const ethereum = await wallet.getEthereumProvider();
+      const ethers6Provider = new BrowserProvider(ethereum);
 
-      dispatch(setProvider(provider))
-      dispatch(setWeb3(web3Instance))
+      dispatch(setProvider(ethers6Provider))
       dispatch(setWalletAddress(wallet.address))
       dispatch(setChain(chains.find(item => item.eip155 === Number(wallet.chainId.split(':')[1]))))
     }
@@ -43,10 +42,10 @@ export default function Home() {
       const balance = await getAccountBalance()
       setBalance(balance)
     }
-    if(web3) {
+    if(provider) {
       getBalance()
     }
-  }, [web3])
+  }, [provider])
 
   const handleAttestation = async () => await attest()
 

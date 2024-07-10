@@ -1,7 +1,9 @@
 import Navbar from "../Navbar/Navbar"
 import {Outlet} from "react-router-dom";
 import {usePrivy} from "@privy-io/react-auth";
-import {useDispatch, useSelector} from "react-redux"
+import {useSelector} from "react-redux"
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const NetworkAlert = () =>
   <div className="bg-red-100 border border-red-400 text-red-700 text-center px-4 py-3 rounded relative" role="alert">
@@ -17,6 +19,8 @@ export default function Layout () {
   return (
     <div className="min-h-screen flex flex-col">
       {user && !chain && <NetworkAlert/>}
+      <ToastContainer />
+
       <Navbar/>
 
       <main className="flex-grow container mx-auto px-4 py-8">
