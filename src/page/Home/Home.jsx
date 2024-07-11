@@ -3,7 +3,7 @@ import {BrowserProvider} from "ethers"
 import {useEffect, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
 
-import {attest, delegatedAttestationRequest, getAccountBalance} from "../../services/BlockchainService"
+import {delegatedAttestationRequest, getAccountBalance} from "../../services/BlockchainService"
 import {setChain, setProvider, setWalletAddress} from "../../store"
 
 import {CONTRACT_CONFIG} from "../../constants/config"
@@ -19,6 +19,7 @@ export default function Home() {
   const {wallets} = useWallets()
 
   const [balance, setBalance] = useState(0)
+  const [inputValue, setInputValue] = useState('')
   const chain = useSelector((state) => state.app.chain)
   const provider = useSelector((state) => state.app.provider)
 
@@ -47,9 +48,10 @@ export default function Home() {
     }
   }, [provider])
 
-  const handleAttestation = async () => await attest()
-
-  const handleDelegatedAttestation = async () => await delegatedAttestationRequest()
+  const handleDelegatedAttestation = async () => {
+    await delegatedAttestationRequest(inputValue)
+    setInputValue('')
+  }
 
   return(
     <>
@@ -64,13 +66,10 @@ export default function Home() {
             <p>EAS contract: {CONTRACT_CONFIG[chain?.eip155].EAS_CONTRACT_ADDRESS}</p>
             <p>SchemaId: {CONTRACT_CONFIG[chain?.eip155].SCHEMA_ID}</p>
           </div>
-          <button
-            disabled={user && !chain}
-            className="btn btn-primary"
-            onClick={handleAttestation}
-          >
-            Attest
-          </button>
+          <div className="flex flex-col p-2">
+            <label>What's your name?</label>
+            <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Type your name here"/>
+          </div>
           <button
             disabled={user && !chain}
             className="btn btn-primary"

@@ -6,10 +6,6 @@ import {CONTRACT_CONFIG} from "../constants/config"
 import {addDelegateAttestationSign} from "./FirestoreSerivce.js";
 import {toast} from "react-toastify";
 
-const questionsAndAnswers = [
-  { name: 'testField', value: 'this is the test', type: 'string' },
-]
-
 export const getAccountBalance = async () => {
   const { walletAddress, provider } = getApplicationState().app
   const balance = await provider.getBalance(walletAddress);
@@ -43,11 +39,15 @@ export const attest = async () => {
   console.log('Transaction receipt:', tx.receipt)
 }
 
-export const delegatedAttestationRequest = async () => {
+export const delegatedAttestationRequest = async (answer) => {
   const { chain, provider, walletAddress  } = getApplicationState().app
   const { EAS_CONTRACT_ADDRESS, SCHEMA_ID } = CONTRACT_CONFIG[chain.eip155]
 
   const walletSigner = await provider.getSigner()
+
+  const questionsAndAnswers = [
+    { name: 'testField', value: answer, type: 'string' },
+  ]
 
   const recipient = '0xc3689E0F44672CEC04387d6437968f6ead9d3a09'
   const schemaEncoder = new SchemaEncoder('string testField')
