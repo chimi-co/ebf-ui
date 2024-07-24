@@ -17,7 +17,7 @@ export default function Layout () {
   const chain = useSelector((state) => state.app.chain)
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen h-screen flex flex-col">
       {user && !chain && <NetworkAlert/>}
       <ToastContainer />
 
