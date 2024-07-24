@@ -2,6 +2,7 @@ import {usePrivy, useWallets} from "@privy-io/react-auth"
 import {BrowserProvider} from "ethers"
 import {useEffect, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
+import {useNavigate} from "react-router-dom"
 
 import {delegatedAttestationRequest, getAccountBalance} from "../../services/BlockchainService"
 import {setChain, setProvider, setWalletAddress} from "../../store"
@@ -15,6 +16,7 @@ const chains = [
 
 export default function Home() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { user } = usePrivy()
   const {wallets} = useWallets()
 
@@ -53,6 +55,10 @@ export default function Home() {
     setInputValue('')
   }
 
+  const goToQuestions = () => {
+    navigate(`/users/${user?.wallet?.address}/surveys`)
+  }
+
   return(
     <>
       <h2 className="text-2xl font-semibold mb-4">Main Content</h2>
@@ -76,6 +82,12 @@ export default function Home() {
             onClick={handleDelegatedAttestation}
           >
             Delegated Attest
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={goToQuestions}
+          >
+            Go to surveys
           </button>
         </>
       }
