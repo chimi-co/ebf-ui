@@ -1,11 +1,11 @@
-import {Button, List, Spin, Tag} from "antd"
-import {useEffect, useState} from "react"
-import {Link, useNavigate, useParams} from "react-router-dom"
+import moment from 'moment'
+import {Button, List, Spin, Tag} from 'antd'
+import {useEffect, useState} from 'react'
+import {Link, useNavigate, useParams} from 'react-router-dom'
 
-import {addSurvey, getSurveysByUser} from "../../services/FirestoreSerivce"
-import {STEPS} from "../../constants/app"
+import {addSurvey, getSurveysByUser} from '../../services/FirestoreSerivce'
 
-import moment from "moment"
+import {STEPS} from '../../constants/app'
 
 const status = { COMPLETED: {label:'Completed', color: 'success'}, PENDING: {label:'Pending', color: 'volcano'}}
 
@@ -36,7 +36,6 @@ export default () => {
     setLoadingAdd(true)
     const surveyId = await addSurvey({steps: STEPS, walletAddress, createdAt: Date.now(), status: 'PENDING'})
     setLoadingAdd(false)
-    // await fetchSurveys()
     navigate(`/users/${walletAddress}/surveys/${surveyId}`)
 
   }

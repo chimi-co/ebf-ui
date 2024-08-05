@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { ConfigProvider } from 'antd'
 import { PrivyProvider } from '@privy-io/react-auth'
 import { Provider } from 'react-redux'
 import {baseSepolia, sepolia} from 'viem/chains'
@@ -22,11 +23,20 @@ const config = {
   supportedChains: [sepolia, baseSepolia],
 }
 
+const themeConfig = {
+  token: {
+    colorPrimary: '#E94F2B',
+    borderRadius: '20px',
+  },
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <PrivyProvider appId={id} config={config}>
       <Provider store={store}>
-        <AppRouter />
+        <ConfigProvider theme={themeConfig}>
+          <AppRouter />
+        </ConfigProvider>
       </Provider>
     </PrivyProvider>
   </React.StrictMode>,
