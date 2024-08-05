@@ -1,7 +1,10 @@
-import {Button, Form, Input, message} from "antd";
+import {Button, Checkbox, Form, Input, message, Radio} from "antd";
 import {useEffect, useState} from "react";
+import Markdown from 'markdown-to-jsx'
 
-export const Step = ({current, questions, steps, title, description, onNext, onPrevious}) => {
+import './styles.css'
+
+export const Step = ({backgroundColor, current, questions, steps, title, description, subtitle, onNext, onPrevious}) => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
 
@@ -11,16 +14,12 @@ export const Step = ({current, questions, steps, title, description, onNext, onP
    })
   }, [questions])
 
-  const section = {
-    subtitle:`Put answers inside boxes below. Use the box at left if additional space is required.`,
-  }
-
   const handleSubmit = (dir) => {
     setLoading(true)
     const values = form.getFieldsValue()
 
     const newquestions = questions.map((question, index) => {
-      return {label: question.label, answer: values[index]}
+      return {...question, answer: values[index],}
     })
 
     if(dir === 'previous') {
@@ -32,30 +31,37 @@ export const Step = ({current, questions, steps, title, description, onNext, onP
   }
 
   return(
-    <div className="h-full w-3/4">
-      <div className="flex" style={{ height: 'calc(100% - 100px)' }}>
-        <div className="w-1/2 py-3 px-6" style={{backgroundColor: '#083763'}}>
+    <div className="w-3/4">
+      <div className="flex h-full">
+        <div className="w-1/2 py-3 px-6" style={{backgroundColor: backgroundColor}}>
           <div className="text-center my-4">
             <h2 className="text-white">{title}</h2>
           </div>
-          <p className="text-white text-sm">{description ?? ''}</p>
+          <Markdown className="description text-white text-sm">
+            {description ?? ''}
+          </Markdown>
         </div>
-        <div className="w-1/2 p-3 px-6 ml-4">
-          <h4 className="pb-6">{section.subtitle}</h4>
+        <div className="content w-1/2 p-3 px-6 ml-4 overflow-auto	">
+          <h4 className="pb-6">{<Markdown>{subtitle}</Markdown>}</h4>
           <Form
             name="create-step-form"
             form={form}
             layout="vertical"
           >
-            {questions?.map((question, index) =>
-              <Form.Item
-                key={question.label}
-                label={question.label}
-                required
-                name={index}
-              >
-                <Input />
-              </Form.Item>
+            {questions?.map((question, index) => {
+              const newOptions = (question.options || ['Yes', 'No']).map(option=> ({label: option, value: option}))
+              return (
+                <Form.Item
+                  key={question.label}
+                  label={<Markdown>{question.label}</Markdown>}
+                  required={question.required}
+                  name={index}
+                >
+                  <CustomInput type={question.type} options={newOptions}/>
+                </Form.Item>
+              )
+
+            }
             )}
           </Form>
         </div>
@@ -70,16 +76,33 @@ export const Step = ({current, questions, steps, title, description, onNext, onP
   )
 }
 
+const CustomInput = ({ type, ...rest }) => {
+  switch (type) {
+    case 'textArea':
+      return <Input.TextArea {...rest} />;
+    case 'checkbox':
+      return (
+        <Checkbox.Group options={rest.options} {...rest}/>
+      )
+    case 'radio':
+      return (
+        <Radio.Group options={rest.options} {...rest}/>
+      );
+    default:
+      return <Input {...rest} />;
+  }
+}
+
 const StepperNavigation = ({current, steps, onClick, isLoading}) => (
-  <div className="flex justify-end mt-4">
+  <div className="flex justify-end">
     {current > 0 && (
       <Button loading={isLoading} className="my-0 mx-2" onClick={() => onClick('previous')}>
-        Previous
+        PREVIOUS
       </Button>
     )}
     {current < steps - 1 && (
       <Button loading={isLoading}  type="primary" onClick={() => onClick('next')}>
-        Next
+        NEXT
       </Button>
     )}
     {current === steps - 1 && (
