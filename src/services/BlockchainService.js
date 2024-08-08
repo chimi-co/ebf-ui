@@ -1,10 +1,10 @@
 import { EAS, SchemaEncoder, ZERO_BYTES32} from '@ethereum-attestation-service/eas-sdk';
-import {BrowserProvider, ethers} from 'ethers'
+import {ethers} from 'ethers'
 
 import {getApplicationState} from "../utils"
 import {CONTRACT_CONFIG} from "../constants/config"
-import {addDelegateAttestationSign} from "./FirestoreSerivce.js";
-import {toast} from "react-toastify";
+import {addDelegateAttestationSign} from "./FirestoreSerivce"
+import {toast} from "react-toastify"
 
 export const getAccountBalance = async () => {
   const { walletAddress, provider } = getApplicationState().app
@@ -39,7 +39,7 @@ export const attest = async () => {
   console.log('Transaction receipt:', tx.receipt)
 }
 
-export const delegatedAttestationRequest = async (answer) => {
+export const delegatedAttestationRequest = async (answer, surveyId) => {
   const { chain, provider, walletAddress  } = getApplicationState().app
   const { EAS_CONTRACT_ADDRESS, SCHEMA_ID } = CONTRACT_CONFIG[chain.eip155]
 
@@ -81,18 +81,17 @@ export const delegatedAttestationRequest = async (answer) => {
         status: 'PENDING',
         questionsAndAnswers,
         network: chain,
-        attester: walletAddress
+        attester: walletAddress,
+        surveyId,
       }
 
       delete sign.expirationTime
       delete sign.nonce
 
-      await addDelegateAttestationSign(sign)
-
-      toast.success('Delegate attestation sign completed', {autoClose: 4000})
+      return await addDelegateAttestationSign(sign)
     } catch (e) {
       toast.error('Delegate attestation sign completed', {autoClose: 4000})
-      console.error("Error signing the attestation:", e)
+      throw e
     }
   }
 }

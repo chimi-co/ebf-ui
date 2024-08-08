@@ -60,9 +60,7 @@ export const Step = ({backgroundColor, current, questions, steps, title, descrip
                   <CustomInput type={question.type} options={newOptions}/>
                 </Form.Item>
               )
-
-            }
-            )}
+            })}
           </Form>
         </div>
       </div>
