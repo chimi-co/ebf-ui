@@ -3,15 +3,23 @@ import {Button, List, Spin, Tag} from 'antd'
 import {useEffect, useState} from 'react'
 import {Link, useNavigate, useParams} from 'react-router-dom'
 
-import {addSurvey, getSurveysByUser} from '../../services/FirestoreSerivce'
+import {addSurvey, getSurveysByUser, updateSurvey} from '../../services/FirestoreSerivce'
+import {delegatedAttestationRequest} from "../../services/BlockchainService"
 
 import {STEPS} from '../../constants/app'
 
-const status = { COMPLETED: {label:'Completed', color: 'success'}, PENDING: {label:'Pending', color: 'volcano'}}
+import './styles.css'
+
+const status = {
+  COMPLETED: {label:'Completed', color: 'success'},
+  PENDING: {label:'Pending', color: 'volcano'},
+  SIGNED: {label:'Submitted', color: 'processing'},
+}
 
 export default () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
+  const [loadingBtn, setLoadingBtn] = useState({})
   const [loadingAdd, setLoadingAdd] = useState(false)
   const { userWallet: walletAddress } = useParams()
   const navigate = useNavigate()
@@ -37,7 +45,23 @@ export default () => {
     const surveyId = await addSurvey({steps: STEPS, walletAddress, createdAt: Date.now(), status: 'PENDING'})
     setLoadingAdd(false)
     navigate(`/users/${walletAddress}/surveys/${surveyId}`)
+  }
 
+  const handleGoToSurvey = (id) => {
+    navigate(`/users/${walletAddress}/surveys/${id}`)
+  }
+
+  const handleDelegatedAttestation = async (surveyId) => {
+    setLoadingBtn((prevState) => ({ ...prevState, [surveyId]: true }))
+    try {
+      const hash = 'Hash from ipfs'
+      const delegatedAttestationId = await delegatedAttestationRequest(hash, surveyId)
+      await updateSurvey(surveyId, {status: 'SIGNED', delegatedAttestationId})
+      await fetchSurveys()
+    } catch (error) {
+      console.error('Error when sign the attestation', error)
+    }
+    setLoadingBtn((prevState) => ({ ...prevState, [surveyId]: false }))
   }
 
   return (
@@ -55,7 +79,14 @@ export default () => {
           itemLayout="horizontal"
           dataSource={data}
           renderItem={(item) => (
-            <List.Item actions={[<Button>Attest</Button>]}>
+            <List.Item actions={ item.status === 'PENDING' ?
+              [
+                <Button onClick={() => handleGoToSurvey(item.id)}>Edit</Button>,
+                <Button disabled={!item.isValid} loading={loadingBtn[item.id]} onClick={() => handleDelegatedAttestation(item.id)}>Submit</Button>] :
+              [
+                <Button onClick={() => handleDelegatedAttestation(item.id)}>View</Button>
+              ]
+            }>
               <List.Item.Meta
                 title={<Link to={`/users/${walletAddress}/surveys/${item.id}`}>{item.id}</Link>}
                 description={`Survey created at: ${moment(item.createdAt).format('LL')}`}

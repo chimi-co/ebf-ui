@@ -99,6 +99,7 @@ export const addDelegateAttestationSign = async (data) => {
   try {
     const docRef = await addDocument(DELEGATE_ATTESTATION_SIGNS_COLLECTION, data)
     console.log("Documento añadido con ID: ", docRef.id)
+    return docRef.id
   } catch (e) {
     console.error("Error añadiendo documento: ", e)
   }
