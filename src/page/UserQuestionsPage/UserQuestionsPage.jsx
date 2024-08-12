@@ -44,7 +44,11 @@ export default () => {
     setLoadingAdd(true)
     const surveyId = await addSurvey({steps: STEPS, walletAddress, createdAt: Date.now(), status: 'PENDING'})
     setLoadingAdd(false)
-    navigate(`/users/${walletAddress}/surveys/${surveyId}`)
+    handleGoToEditSurvey(surveyId)
+  }
+
+  const handleGoToEditSurvey = (id) => {
+    navigate(`/users/${walletAddress}/surveys/${id}/edit`)
   }
 
   const handleGoToSurvey = (id) => {
@@ -81,14 +85,14 @@ export default () => {
           renderItem={(item) => (
             <List.Item actions={ item.status === 'PENDING' ?
               [
-                <Button onClick={() => handleGoToSurvey(item.id)}>Edit</Button>,
+                <Button onClick={() => handleGoToEditSurvey(item.id)}>Edit</Button>,
                 <Button disabled={!item.isValid} loading={loadingBtn[item.id]} onClick={() => handleDelegatedAttestation(item.id)}>Submit</Button>] :
               [
-                <Button onClick={() => handleDelegatedAttestation(item.id)}>View</Button>
+                <Button onClick={() => handleGoToSurvey(item.id)}>View</Button>,
               ]
             }>
               <List.Item.Meta
-                title={<Link to={`/users/${walletAddress}/surveys/${item.id}`}>{item.id}</Link>}
+                title={<Link to={`/users/${walletAddress}/surveys/${item.id}/edit`}>{item.id}</Link>}
                 description={`Survey created at: ${moment(item.createdAt).format('LL')}`}
               />
               <div className="flex">
