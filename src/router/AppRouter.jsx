@@ -3,6 +3,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom"
 import Layout from "../components/Layout/Layout"
 import Home from "../page/Home/Home"
 import UserQuestionsPage from "../page/UserQuestionsPage/UserQuestionsPage"
+import SurveyEditPage from "../page/SurveyEditPage/SurveyEditPage"
 import SurveyPage from "../page/SurveyPage/SurveyPage"
 
 export default function AppRouter() {
@@ -12,6 +13,7 @@ export default function AppRouter() {
         <Route path='/' element={<Layout/>}>
           <Route path='/' element={<Home/>}/>
           <Route path='/users/:userWallet/surveys' element={<UserQuestionsPage/>}/>
+          <Route path='/users/:userWallet/surveys/:surveyId/edit' element={<SurveyEditPage/>}/>
           <Route path='/users/:userWallet/surveys/:surveyId' element={<SurveyPage/>}/>
         </Route>
       </Routes>

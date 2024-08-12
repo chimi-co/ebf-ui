@@ -1,6 +1,8 @@
-import {Button, Checkbox, Form, Input, message, Radio} from "antd";
+import {Checkbox, Form, Input, Radio} from "antd";
 import {useEffect, useState} from "react";
 import Markdown from 'markdown-to-jsx'
+
+import StepperNavigation from "../StepperNavigation/StepperNavigation";
 
 import './styles.css'
 
@@ -90,23 +92,3 @@ const CustomInput = ({ type, ...rest }) => {
       return <Input {...rest} />;
   }
 }
-
-const StepperNavigation = ({current, steps, onClick, isLoading}) => (
-  <div className="flex justify-end">
-    {current > 0 && (
-      <Button loading={isLoading} className="my-0 mx-2" onClick={() => onClick('previous')}>
-        PREVIOUS
-      </Button>
-    )}
-    {current < steps - 1 && (
-      <Button loading={isLoading}  type="primary" onClick={() => onClick('next')}>
-        NEXT
-      </Button>
-    )}
-    {current === steps - 1 && (
-      <Button type="primary" onClick={() => message.success('Processing complete!')}>
-        Done
-      </Button>
-    )}
-  </div>
-)
