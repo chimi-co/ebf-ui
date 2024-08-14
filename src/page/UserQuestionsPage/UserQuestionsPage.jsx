@@ -5,6 +5,7 @@ import {Link, useNavigate, useParams} from 'react-router-dom'
 
 import {addSurvey, getSurveysByUser, updateSurvey} from '../../services/FirestoreSerivce'
 import {delegatedAttestationRequest} from "../../services/BlockchainService"
+import {getIpfsHash} from "../../services/IpfsService"
 
 import {STEPS} from '../../constants/app'
 
@@ -58,14 +59,42 @@ export default () => {
   const handleDelegatedAttestation = async (surveyId) => {
     setLoadingBtn((prevState) => ({ ...prevState, [surveyId]: true }))
     try {
-      const hash = 'Hash from ipfs'
-      const delegatedAttestationId = await delegatedAttestationRequest(hash, surveyId)
-      await updateSurvey(surveyId, {status: 'SIGNED', delegatedAttestationId})
+      const {data} = await getIpfsHash(surveyId)
+      const delegatedAttestationId = await delegatedAttestationRequest(data.IpfsHash, surveyId)
+      await updateSurvey(surveyId, {status: 'SIGNED', delegatedAttestationId, ipfsHash: data.IpfsHash})
       await fetchSurveys()
     } catch (error) {
       console.error('Error when sign the attestation', error)
     }
     setLoadingBtn((prevState) => ({ ...prevState, [surveyId]: false }))
+  }
+
+  const renderActions = (item) => {
+    const {attestUID, ipfsHash, status} = item
+    if(status === 'PENDING') {
+      return [
+        <Button onClick={() => handleGoToEditSurvey(item.id)}>Edit</Button>,
+        <Button disabled={!item.isValid} loading={loadingBtn[item.id]} onClick={() => handleDelegatedAttestation(item.id)}>Submit</Button>
+      ]
+    }
+
+    if(status === 'SIGNED') {
+      return [
+        <Button onClick={() => handleGoToSurvey(item.id)}>View</Button>,
+      ]
+    }
+
+    if(status === 'COMPLETED') {
+      return [
+        <Button onClick={() => handleGoToSurvey(item.id)}>View</Button>,
+        <a href={`https://sepolia.easscan.org/attestation/view/${attestUID}`} target="_blank">View attestation</a>,
+        <a href={`https://impact-scribe.mypinata.cloud/ipfs/${ipfsHash}`} target="_blank">View ipfs</a>,
+        // <Button type="link" onClick={() => handleGoToSurvey(item.id)}>View attestation</Button>,
+        // <Button type="link" onClick={() => handleGoToSurvey(item.id)}>View ipfs</Button>,
+      ]
+    }
+
+
   }
 
   return (
@@ -83,14 +112,7 @@ export default () => {
           itemLayout="horizontal"
           dataSource={data}
           renderItem={(item) => (
-            <List.Item actions={ item.status === 'PENDING' ?
-              [
-                <Button onClick={() => handleGoToEditSurvey(item.id)}>Edit</Button>,
-                <Button disabled={!item.isValid} loading={loadingBtn[item.id]} onClick={() => handleDelegatedAttestation(item.id)}>Submit</Button>] :
-              [
-                <Button onClick={() => handleGoToSurvey(item.id)}>View</Button>,
-              ]
-            }>
+            <List.Item actions={renderActions(item)}>
               <List.Item.Meta
                 title={<Link to={`/users/${walletAddress}/surveys/${item.id}/edit`}>{item.id}</Link>}
                 description={`Survey created at: ${moment(item.createdAt).format('LL')}`}
