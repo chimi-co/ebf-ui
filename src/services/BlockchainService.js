@@ -39,18 +39,18 @@ export const attest = async () => {
   console.log('Transaction receipt:', tx.receipt)
 }
 
-export const delegatedAttestationRequest = async (answer, surveyId) => {
+export const delegatedAttestationRequest = async (ipfsHash, surveyId) => {
   const { chain, provider, walletAddress  } = getApplicationState().app
   const { EAS_CONTRACT_ADDRESS, SCHEMA_ID } = CONTRACT_CONFIG[chain.eip155]
 
   const walletSigner = await provider.getSigner()
 
   const questionsAndAnswers = [
-    { name: 'testField', value: answer, type: 'string' },
+    { name: 'IpfsUri', value: `ipfs://${ipfsHash}`, type: 'string' },
   ]
 
   const recipient = '0xc3689E0F44672CEC04387d6437968f6ead9d3a09'
-  const schemaEncoder = new SchemaEncoder('string testField')
+  const schemaEncoder = new SchemaEncoder('string IpfsUri')
   const encodedDataString = schemaEncoder.encodeData(questionsAndAnswers)
 
   const eas = new EAS(EAS_CONTRACT_ADDRESS)
@@ -79,7 +79,7 @@ export const delegatedAttestationRequest = async (answer, surveyId) => {
         ...delegatedAttestation.message,
         signature: delegatedAttestation.signature,
         status: 'PENDING',
-        questionsAndAnswers,
+        ipfsHash,
         network: chain,
         attester: walletAddress,
         surveyId,
