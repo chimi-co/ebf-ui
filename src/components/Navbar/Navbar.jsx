@@ -4,13 +4,13 @@ import NetworkSelector from "../NetworkSelector/NetworkSelector";
 export default function Navbar() {
   const { login, logout, user } = usePrivy()
 
-  const shortenText = (text) => {
-    if (text.length <= 8) {
+  const shortenText = (text ) => {
+    if (text?.length <= 8) {
       return text;
     }
 
-    const firstPart = text.slice(0, 4)
-    const lastPart = text.slice(-4)
+    const firstPart = text?.slice(0, 4)
+    const lastPart = text?.slice(-4)
 
     return `${firstPart}....${lastPart}`
   }
