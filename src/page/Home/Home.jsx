@@ -1,73 +1,52 @@
-import {usePrivy} from "@privy-io/react-auth"
-import {useEffect, useState} from "react"
-import {useSelector} from "react-redux"
-import {useNavigate} from "react-router-dom"
+import {useEffect} from "react"
 
-import {delegatedAttestationRequest, getAccountBalance} from "../../services/BlockchainService"
-
-import {CONTRACT_CONFIG} from "../../constants/config"
+import './styles.css'
 
 export default function Home() {
-  const navigate = useNavigate()
-  const { user } = usePrivy()
-
-  const [balance, setBalance] = useState(0)
-  const [inputValue, setInputValue] = useState('')
-  const chain = useSelector((state) => state.app.chain)
-  const provider = useSelector((state) => state.app.provider)
 
   useEffect(() => {
-    const getBalance = async () => {
-      const balance = await getAccountBalance()
-      setBalance(balance)
-    }
-    if(provider) {
-      getBalance()
-    }
-  }, [provider])
+    const divElement = document.getElementById('main');
+    divElement.classList.add('main-home');
 
-  const handleDelegatedAttestation = async () => {
-    await delegatedAttestationRequest(inputValue)
-    setInputValue('')
-  }
-
-  const goToQuestions = () => {
-    navigate(`/users/${user?.wallet?.address}/surveys`)
-  }
+    return () => {
+      divElement.classList.remove('main-home');
+    };
+  }, [])
 
   return(
-    <>
-      <h2 className="text-2xl font-semibold mb-4">Main Content</h2>
-      <p>This is the main content area.</p>
-      {user &&
-        <>
-          <div className="py-6">
-            <p>Wallet address: {user?.wallet?.address}</p>
-            <p>Account balance: {balance} ETH</p>
-            <p>eip155: {chain?.eip155}</p>
-            <p>EAS contract: {CONTRACT_CONFIG[chain?.eip155].EAS_CONTRACT_ADDRESS}</p>
-            <p>SchemaId: {CONTRACT_CONFIG[chain?.eip155].SCHEMA_ID}</p>
-          </div>
-          <div className="flex flex-col p-2">
-            <label>What's your name?</label>
-            <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Type your name here"/>
-          </div>
-          <button
-            disabled={user && !chain}
-            className="btn btn-primary"
-            onClick={handleDelegatedAttestation}
-          >
-            Delegated Attest
-          </button>
-          <button
-            className="btn btn-primary"
-            onClick={goToQuestions}
-          >
-            Go to surveys
-          </button>
-        </>
-      }
-    </>
+    <div className="home-page">
+      <div className="description-container">
+        <div className="text font-semibold">
+          <h1 className="text-2xl">What is ImpactScribe?</h1>
+          <p>
+            A tool for assessing your projects impact in Six Key Areas: Air, Water, Soil, Biodiversity, Equity, and Carbon
+            using the Ecological Benefits Framework (EBF). This tool will gather information about your project in order
+            to generate an EBF Impact Report, an EBF Impact Certificate and your EBF digital fingerprint.
+          </p>
+          <p>
+            In order to get started click Connect to create an account and then click Surveys to begin the EBF questionaire.
+          </p>
+        </div>
+        <div className="text font-semibold">
+          <h1 className="text-2xl">
+            What is EBF?
+          </h1>
+          <p>
+            The Ecological Benefits Framework (EBF) is a new paradigm. It provides a foundational architecture to
+            radically transform global carbon and ecological benefits markets both by increasing transparency, trust,
+            quality, and equity and by accelerating the coordinated delivery of positive financial and environmental impacts.
+          </p>
+          <p>
+            By developing a shared framework, EBF can create alignment across public and private sectors to support
+            the rapid deployment of strategic capital for activities that create measurable, life-affirming ecological
+            impacts. The unprecedented coordination of financial markets, UN agencies, NGOs, companies, and philanthropic
+            interests will bring attention to—and help create—a shared pathway for accelerated solutions.
+          </p>
+          <p>
+            Learn more at https://ebfcommons.org/
+          </p>
+        </div>
+      </div>
+    </div>
   )
-
 }

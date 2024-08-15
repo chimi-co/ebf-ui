@@ -89,8 +89,6 @@ export default () => {
         <Button onClick={() => handleGoToSurvey(item.id)}>View</Button>,
         <a href={`https://sepolia.easscan.org/attestation/view/${attestUID}`} target="_blank">View attestation</a>,
         <a href={`https://impact-scribe.mypinata.cloud/ipfs/${ipfsHash}`} target="_blank">View ipfs</a>,
-        // <Button type="link" onClick={() => handleGoToSurvey(item.id)}>View attestation</Button>,
-        // <Button type="link" onClick={() => handleGoToSurvey(item.id)}>View ipfs</Button>,
       ]
     }
 

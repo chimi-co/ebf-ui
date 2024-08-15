@@ -1,0 +1,28 @@
+.main-home {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.home-page {
+  height: 100%;
+  width: 100vw;
+  background-image: url('/freenaturestock.png');
+  background-size: cover;
+
+}
+
+.description-container {
+  padding: 50px 100px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.text {
+  width: 700px;
+  color: white;
+}
+
+.text p {
+  margin-bottom: 20px;
+}
