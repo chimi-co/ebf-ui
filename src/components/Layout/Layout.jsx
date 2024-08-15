@@ -50,13 +50,13 @@ export default function Layout () {
 
       <Navbar/>
 
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main id="main" className="flex-grow container mx-auto px-4 py-8">
         <Outlet/>
       </main>
 
       <footer className="bg-neutral py-4">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2023 EBF. All rights reserved.</p>
+          <p>&copy; 2024 Spark Ecosystems.  All rights reserved.</p>
         </div>
       </footer>
     </div>
