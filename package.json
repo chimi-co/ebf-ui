@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:development": "vite build --mode development",
+    "build:production": "vite build --mode production",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "deploy": "vite build && firebase deploy"
+    "deploy:dev": "yarn build:development && firebase deploy -P development",
+    "deploy:prod": "yarn build:production && firebase deploy -P production"
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",

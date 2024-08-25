@@ -13,7 +13,9 @@ import 'react-toastify/dist/ReactToastify.css'
 
 const chains = [
   {eip155: 11155111, name: 'Sepolia'},
-  {eip155: 84532, name: 'Base Sepolia'}
+  {eip155: 84532, name: 'Base Sepolia'},
+  {eip155: 42161, name: 'Arbitrum'},
+  {eip155: 42220, name: 'Celo'}
 ]
 
 const NetworkAlert = () =>

@@ -17,6 +17,12 @@ const status = {
   SIGNED: {label:'Submitted', color: 'processing'},
 }
 
+const EASUrls = {
+  Sepolia: 'https://sepolia.easscan.org/attestation/view',
+  Arbitrum: 'https://arbitrum.easscan.org/attestation/view',
+  Celo: 'https://celo.easscan.org/schema/view'
+}
+
 export default () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -56,11 +62,12 @@ export default () => {
     navigate(`/users/${walletAddress}/surveys/${id}`)
   }
 
-  const handleDelegatedAttestation = async (surveyId) => {
+  const handleDelegatedAttestation = async (survey) => {
+    const {id: surveyId, projectName, projectLocation, projectWebsite, shortProjectDescription} = survey
     setLoadingBtn((prevState) => ({ ...prevState, [surveyId]: true }))
     try {
       const {data} = await getIpfsHash(surveyId)
-      const delegatedAttestationId = await delegatedAttestationRequest(data.IpfsHash, surveyId)
+      const delegatedAttestationId = await delegatedAttestationRequest(data.IpfsHash, {surveyId, projectName, projectLocation, projectWebsite, shortProjectDescription})
       await updateSurvey(surveyId, {status: 'SIGNED', delegatedAttestationId, ipfsHash: data.IpfsHash})
       await fetchSurveys()
     } catch (error) {
@@ -69,12 +76,21 @@ export default () => {
     setLoadingBtn((prevState) => ({ ...prevState, [surveyId]: false }))
   }
 
+  const renderViewLink = (UID, attestation) => {
+    if(attestation) {
+      const {network, attestUID } = attestation
+      return `${EASUrls[network]}/${attestUID}`
+    } else {
+      return `https://sepolia.easscan.org/attestation/view/${UID}`
+    }
+  }
+
   const renderActions = (item) => {
-    const {attestUID, ipfsHash, status} = item
+    const {attestUID, attestation, ipfsHash, status} = item
     if(status === 'PENDING') {
       return [
         <Button onClick={() => handleGoToEditSurvey(item.id)}>Edit</Button>,
-        <Button disabled={!item.isValid} loading={loadingBtn[item.id]} onClick={() => handleDelegatedAttestation(item.id)}>Submit</Button>
+        <Button disabled={!item.isValid} loading={loadingBtn[item.id]} onClick={() => handleDelegatedAttestation(item)}>Submit</Button>
       ]
     }
 
@@ -87,12 +103,10 @@ export default () => {
     if(status === 'COMPLETED') {
       return [
         <Button onClick={() => handleGoToSurvey(item.id)}>View</Button>,
-        <a href={`https://sepolia.easscan.org/attestation/view/${attestUID}`} target="_blank">View attestation</a>,
+        <a href={renderViewLink(attestUID, attestation)} target="_blank">View attestation</a>,
         <a href={`https://impact-scribe.mypinata.cloud/ipfs/${ipfsHash}`} target="_blank">View ipfs</a>,
       ]
     }
-
-
   }
 
   return (
@@ -112,7 +126,7 @@ export default () => {
           renderItem={(item) => (
             <List.Item actions={renderActions(item)}>
               <List.Item.Meta
-                title={<Link to={`/users/${walletAddress}/surveys/${item.id}/edit`}>{item.id}</Link>}
+                title={<Link to={`/users/${walletAddress}/surveys/${item.id}`}>{item?.projectName || item.id}</Link>}
                 description={`Survey created at: ${moment(item.createdAt).format('LL')}`}
               />
               <div className="flex">

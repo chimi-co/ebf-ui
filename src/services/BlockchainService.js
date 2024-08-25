@@ -1,45 +1,12 @@
 import { EAS, SchemaEncoder, ZERO_BYTES32} from '@ethereum-attestation-service/eas-sdk';
-import {ethers} from 'ethers'
 
 import {getApplicationState} from "../utils"
 import {CONTRACT_CONFIG} from "../constants/config"
 import {addDelegateAttestationSign} from "./FirestoreSerivce"
 import {toast} from "react-toastify"
 
-export const getAccountBalance = async () => {
-  const { walletAddress, provider } = getApplicationState().app
-  const balance = await provider.getBalance(walletAddress);
-  return ethers.formatUnits(BigInt(balance), 'ether')
-}
-
-export const attest = async () => {
-  const { chain, provider, walletAddress  } = getApplicationState().app
-  const { EAS_CONTRACT_ADDRESS, SCHEMA_ID } = CONTRACT_CONFIG[chain.eip155]
-
-  const eas = new EAS(EAS_CONTRACT_ADDRESS)
-  const signer = provider.getSigner()
-  eas.connect(signer)
-
-  const schemaEncoder = new SchemaEncoder('string testField')
-  const encodedData = schemaEncoder.encodeData(questionsAndAnswers)
-
-  const tx = await eas.attest({
-    schema: SCHEMA_ID,
-    data: {
-      recipient: walletAddress,
-      expirationTime: 0,
-      revocable: true,
-      data: encodedData
-    }
-  })
-
-  const newAttestationUID = await tx.wait()
-
-  console.log('New attestation UID:', newAttestationUID)
-  console.log('Transaction receipt:', tx.receipt)
-}
-
-export const delegatedAttestationRequest = async (ipfsHash, surveyId) => {
+export const delegatedAttestationRequest = async (ipfsHash, survey) => {
+  const {surveyId, projectName, projectLocation, projectWebsite, shortProjectDescription} = survey
   const { chain, provider, walletAddress  } = getApplicationState().app
   const { EAS_CONTRACT_ADDRESS, SCHEMA_ID } = CONTRACT_CONFIG[chain.eip155]
 
@@ -47,10 +14,14 @@ export const delegatedAttestationRequest = async (ipfsHash, surveyId) => {
 
   const questionsAndAnswers = [
     { name: 'IpfsUri', value: `ipfs://${ipfsHash}`, type: 'string' },
+    { name: 'ProjectName', value: projectName, type: 'string' },
+    { name: 'ProjectLocation', value: projectLocation, type: 'string' },
+    { name: 'ProjectWebsite', value: projectWebsite, type: 'string' },
+    { name: 'Description', value: shortProjectDescription, type: 'string' },
   ]
 
-  const recipient = '0xc3689E0F44672CEC04387d6437968f6ead9d3a09'
-  const schemaEncoder = new SchemaEncoder('string IpfsUri')
+  const recipient = import.meta.env.VITE_API_RECIPIENT
+  const schemaEncoder = new SchemaEncoder('string IpfsUri, string ProjectName, string ProjectLocation, string ProjectWebsite, string Description')
   const encodedDataString = schemaEncoder.encodeData(questionsAndAnswers)
 
   const eas = new EAS(EAS_CONTRACT_ADDRESS)
