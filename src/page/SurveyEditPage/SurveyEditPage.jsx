@@ -1,3 +1,4 @@
+import {ArrowLeftOutlined} from "@ant-design/icons"
 import {Button, Spin, Steps} from 'antd'
 import {useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
@@ -8,7 +9,6 @@ import {getSurveyById, updateSurvey} from "../../services/FirestoreSerivce"
 import {STEPS} from "../../constants/app"
 
 import './styles.css'
-import {ArrowLeftOutlined} from "@ant-design/icons";
 
 const tutorial = {
   title: `Intro`,
@@ -22,6 +22,7 @@ export default () => {
   const [current, setCurrent] = useState(0)
   const [steps, setSteps] = useState(STEPS)
   const [isLoading, setIsLoading] = useState(false)
+  const [stepStatuses, setStepStatuses] = useState(new Array(STEPS.length + 1).fill(''))
 
   const { userWallet: walletAddress , surveyId } = useParams()
   const navigate = useNavigate()
@@ -30,7 +31,8 @@ export default () => {
     const fetchData = async () => {
       setIsLoading(true)
       const survey = await getSurveyById(surveyId)
-      setSteps([tutorial, ...survey.steps])
+      await setSteps([tutorial, ...survey.steps])
+      await validateSurvey([tutorial, ...survey.steps])
       setIsLoading(false)
     }
 
@@ -43,7 +45,7 @@ export default () => {
     return ({
       key: item.title,
       title: item.title,
-      status: current === index ? null : item.status
+      status: current === index ? null : stepStatuses[index]
     })
   })
 
@@ -52,13 +54,23 @@ export default () => {
     const copy = steps
     copy[current].questions = newQuestions
     setSteps(copy)
-    await updateSurvey(surveyId, {steps: copy.slice(1)})
-    validateSurvey(copy)
+    await validateSurvey(copy)
+    if(current === 1) {
+      await updateSurvey(surveyId, {
+        projectName: newQuestions[0]?.answer,
+        projectLocation: newQuestions[1]?.answer,
+        projectWebsite: newQuestions[2]?.answer,
+        shortProjectDescription: newQuestions[3].answer,
+        steps: copy.slice(1)
+      })
+    } else {
+      await updateSurvey(surveyId, {steps: copy.slice(1)})
+    }
     setIsLoading(false)
   }
 
-  const validateSurvey = (copy) => {
-    copy.forEach(step => {
+  const validateSurvey = async (copy) => {
+    copy.forEach((step, index) => {
      const error = validateQuestions(step.questions)
       let status
       if(error) {
@@ -66,17 +78,25 @@ export default () => {
       } else {
         status = 'finish'
       }
-      step.status = status
+      stepStatuses[index] = status
     })
+
+    const isValid = stepStatuses.every(status => status === 'finish')
+    await updateSurvey(surveyId, {isValid})
+    console.log(stepStatuses, isValid)
   }
 
   const validateQuestions = (questions) => questions.some(q => q.required && q.answer === '')
 
-  const handleChange = (value) => setCurrent(value)
+  const handleChange = (value) => {
+    setCurrent(value)
+  }
 
   const handleNext = async (newQuestions) => {
     await handleSaveData(newQuestions)
-    setCurrent(current + 1)
+    if(current < steps.length - 1) {
+      setCurrent(current + 1)
+    }
   }
 
   const handlePrevious = async (newQuestions) => {

@@ -17,14 +17,35 @@ export default function Home() {
     <div className="home-page">
       <div className="description-container">
         <div className="text font-semibold">
-          <h1 className="text-2xl">What is ImpactScribe?</h1>
+          <h1 className="text-2xl">What is Impact Scribe?</h1>
           <p>
-            A tool for assessing your projects impact in Six Key Areas: Air, Water, Soil, Biodiversity, Equity, and Carbon
-            using the Ecological Benefits Framework (EBF). This tool will gather information about your project in order
-            to generate an EBF Impact Report, an EBF Impact Certificate and your EBF digital fingerprint.
+            Impact Scribe is an exciting new tool for utilizing the Ecological Benefits Framework (EBF) to assess and communicate your project's impact in six key areas:
+          </p>
+          <div className="ml-8 mb-4">
+            <ul className="list-disc">
+              <li>Air</li>
+              <li>Water</li>
+              <li>Soil</li>
+              <li>Biodiversity</li>
+              <li>Equity</li>
+              <li>Carbon</li>
+            </ul>
+          </div>
+          <p>
+            Impact Scribe gathers information about your project in order to generate an EBF Impact Certificate and your EBF Digital Fingerprint.
           </p>
           <p>
-            In order to get started click Connect to create an account and then click Surveys to begin the EBF questionaire.
+            Follow these three easy steps get started:
+          </p>
+          <div className="ml-8 mb-4">
+            <ol className="list-decimal">
+              <li>Click the “Connect” button at the top right corner of this screen;</li>
+              <li>Create an account;</li>
+              <li>Click the “Start a new survey” button to begin the EBF questionnaire.</li>
+            </ol>
+          </div>
+          <p>
+            To learn more about EBF, see the What is EBF section below.
           </p>
         </div>
         <div className="text font-semibold">

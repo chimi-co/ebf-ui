@@ -3,7 +3,7 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 const appSlice = createSlice({
   name: 'app',
   initialState: {
-    chain: {eip155: 11155111, name: 'Sepolia'},
+    chain: import.meta.env.MODE === 'development' ? {eip155: 11155111, name: 'Sepolia'} : {eip155: 42161, name: 'Arbitrum'},
     provider: null,
     walletAddress: null,
   },

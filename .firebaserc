@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "bdf-ui"
+    "default": "bdf-ui",
+    "development": "bdf-ui",
+    "production": "ebf-prod"
   }
 }

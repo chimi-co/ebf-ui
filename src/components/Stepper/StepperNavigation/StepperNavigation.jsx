@@ -7,15 +7,15 @@ export default ({current, steps, onClick, isLoading}) => (
         PREVIOUS
       </Button>
     )}
-    {current < steps - 1 && (
+    {current < steps && (
       <Button loading={isLoading}  type="primary" onClick={() => onClick('next')}>
         NEXT
       </Button>
     )}
-    {current === steps - 1 && (
-      <Button type="primary" onClick={() => message.success('Processing complete!')}>
-        Done
-      </Button>
-    )}
+    {/*{current === steps - 1 && (*/}
+    {/*  <Button type="primary" onClick={() => message.success('Processing complete!')}>*/}
+    {/*    Done*/}
+    {/*  </Button>*/}
+    {/*)}*/}
   </div>
 )

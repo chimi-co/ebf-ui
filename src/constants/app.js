@@ -1,5 +1,33 @@
 export const STEPS = [
   {
+    title: 'PROJECT INFO',
+    description: '',
+    subtitle:`Project information.`,
+    backgroundColor: '#E94F2A',
+    questions: [
+      {
+        label: 'Project Name',
+        answer: '',
+        required: true,
+      },
+      {
+        label: 'Project Location',
+        answer: '',
+        required: true,
+      },
+      {
+        label: 'Project Website',
+        answer: '',
+        required: true,
+      },
+      {
+        label: 'Short Project Description',
+        answer: '',
+        required: true,
+      }
+    ],
+  },
+  {
     title: 'A. THE PROBLEM',
     description: 'An EBF project can be explained in terms of its contributions to six positive impacts (air, water, soil, biodiversity, equity, and carbon).\n' +
       '\n' +

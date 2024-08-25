@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { ConfigProvider } from 'antd'
 import { PrivyProvider } from '@privy-io/react-auth'
 import { Provider } from 'react-redux'
-import {baseSepolia, sepolia} from 'viem/chains'
+import {arbitrum, baseSepolia, celo, sepolia} from 'viem/chains'
 
 import store from './store'
 
@@ -20,7 +20,7 @@ const config = {
   embeddedWallets: {
     createOnLogin: 'users-without-wallets' // defaults to 'off'
   },
-  supportedChains: [sepolia, baseSepolia],
+  supportedChains: [arbitrum, celo, sepolia, baseSepolia],
 }
 
 const themeConfig = {
