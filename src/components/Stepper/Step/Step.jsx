@@ -1,12 +1,12 @@
-import {Checkbox, Form, Input, Radio} from "antd";
-import {useEffect, useState} from "react";
+import {Checkbox, Form, Input, Radio} from "antd"
+import {forwardRef, useEffect, useImperativeHandle, useState} from "react"
 import Markdown from 'markdown-to-jsx'
 
-import StepperNavigation from "../StepperNavigation/StepperNavigation";
+import StepperNavigation from "../StepperNavigation/StepperNavigation"
 
 import './styles.css'
 
-export const Step = ({backgroundColor, current, intro, questions, steps, title, description, subtitle, onDone, onNext, onPrevious}) => {
+export const Step = forwardRef(({backgroundColor, current, intro, questions, steps, title, description, subtitle, onDone, onNext, onPrevious, onSave}, ref) => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
 
@@ -16,7 +16,7 @@ export const Step = ({backgroundColor, current, intro, questions, steps, title, 
    })
   }, [questions])
 
-  const handleSubmit = (dir) => {
+  const handleSubmit = (dir = '') => {
     setLoading(true)
     const values = form.getFieldsValue()
 
@@ -26,18 +26,20 @@ export const Step = ({backgroundColor, current, intro, questions, steps, title, 
 
     if(dir === 'previous') {
       onPrevious(newquestions)
-    }
-
-    if (dir === 'next') {
+    } else if (dir === 'next') {
       onNext(newquestions)
-    }
-
-    if (dir === 'done') {
+    } else if (dir === 'done') {
       onDone(newquestions)
+    } else {
+      onSave(newquestions)
     }
 
     setLoading(false)
   }
+
+  useImperativeHandle(ref, () => ({
+    handleSubmit
+  }))
 
   return(
     <div className="w-3/4">
@@ -84,7 +86,7 @@ export const Step = ({backgroundColor, current, intro, questions, steps, title, 
       />
     </div>
   )
-}
+})
 
 const CustomInput = ({ type, ...rest }) => {
   switch (type) {
