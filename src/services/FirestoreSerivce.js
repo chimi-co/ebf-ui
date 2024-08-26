@@ -46,13 +46,10 @@ async function addDocument(collectionName, data) {
 
 async function updateDocument(collectionName, documentId, updatedData) {
   try {
-    const docRef = doc(db, collectionName, documentId);
-
-    await updateDoc(docRef, updatedData);
-
-    console.log('Document successfully updated');
+    const docRef = doc(db, collectionName, documentId)
+    await updateDoc(docRef, updatedData)
   } catch (error) {
-    console.error('Error updating document:', error);
+    console.error('Error updating document:', error)
   }
 }
 

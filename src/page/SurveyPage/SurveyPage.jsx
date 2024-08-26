@@ -64,6 +64,7 @@ export default () => {
             subtitle={steps[current]?.subtitle}
             steps={steps}
             title={steps[current]?.title}
+            onDone={handleReturnPage}
             onPrevious={() => setCurrent(current - 1)}
             onNext={() => setCurrent(current + 1)}
           />

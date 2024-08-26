@@ -6,7 +6,7 @@ import StepperNavigation from "../StepperNavigation/StepperNavigation";
 
 import './styles.css'
 
-export const Step = ({backgroundColor, current, questions, steps, title, description, subtitle, onNext, onPrevious}) => {
+export const Step = ({backgroundColor, current, intro, questions, steps, title, description, subtitle, onDone, onNext, onPrevious}) => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
 
@@ -26,9 +26,16 @@ export const Step = ({backgroundColor, current, questions, steps, title, descrip
 
     if(dir === 'previous') {
       onPrevious(newquestions)
-    } else {
+    }
+
+    if (dir === 'next') {
       onNext(newquestions)
     }
+
+    if (dir === 'done') {
+      onDone(newquestions)
+    }
+
     setLoading(false)
   }
 
@@ -43,28 +50,31 @@ export const Step = ({backgroundColor, current, questions, steps, title, descrip
             {description ?? ''}
           </Markdown>
         </div>
-        <div className="content w-1/2 p-3 px-6 ml-4 overflow-auto	">
-          <h4 className="pb-6">{<Markdown>{subtitle}</Markdown>}</h4>
-          <Form
-            name="create-step-form"
-            form={form}
-            layout="vertical"
-          >
-            {questions?.map((question, index) => {
-              const newOptions = (question.options || ['Yes', 'No']).map(option=> ({label: option, value: option}))
-              return (
-                <Form.Item
-                  key={question.label}
-                  label={<Markdown>{question.label}</Markdown>}
-                  required={question.required}
-                  name={index}
-                >
-                  <CustomInput type={question.type} options={newOptions}/>
-                </Form.Item>
-              )
-            })}
-          </Form>
-        </div>
+        {intro ? <div className="intro content w-1/2 p-3"/> :
+          <div className="content w-1/2 p-3 px-6 ml-4 overflow-auto">
+            <h4 className="pb-6">{<Markdown>{subtitle}</Markdown>}</h4>
+            <Form
+              name="create-step-form"
+              form={form}
+              layout="vertical"
+            >
+              {questions?.map((question, index) => {
+                const newOptions = (question.options || ['Yes', 'No']).map(option=> ({label: option, value: option}))
+                return (
+                  <Form.Item
+                    key={question.label}
+                    label={<Markdown>{question.label}</Markdown>}
+                    required={question.required}
+                    name={index}
+                  >
+                    <CustomInput type={question.type} options={newOptions}/>
+                  </Form.Item>
+                )
+              })}
+            </Form>
+          </div>
+        }
+
       </div>
       <StepperNavigation
         current={current}
