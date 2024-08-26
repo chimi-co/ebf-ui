@@ -1,6 +1,6 @@
 import {ArrowLeftOutlined} from "@ant-design/icons"
 import {Button, Spin, Steps} from 'antd'
-import {useEffect, useState} from "react"
+import {useEffect, useRef, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
 
 import {Step} from "../../components/Stepper/Step/Step"
@@ -30,6 +30,8 @@ export default () => {
   const [steps, setSteps] = useState(STEPS)
   const [isLoading, setIsLoading] = useState(false)
   const [stepStatuses, setStepStatuses] = useState(new Array(STEPS.length + 1).fill(''))
+
+  const stepRef = useRef(null)
 
   const { userWallet: walletAddress , surveyId } = useParams()
   const navigate = useNavigate()
@@ -95,6 +97,10 @@ export default () => {
   const validateQuestions = (questions) => questions.some(q => q.required && q.answer === '')
 
   const handleChange = (value) => {
+    console.log(stepRef)
+    if (stepRef.current) {
+      stepRef.current.handleSubmit()
+    }
     setCurrent(value)
   }
 
@@ -135,6 +141,7 @@ export default () => {
             onChange={handleChange}
           />
           <Step
+            ref={stepRef}
             backgroundColor={steps[current]?.backgroundColor}
             current={current}
             intro={steps[current]?.intro}
@@ -143,6 +150,7 @@ export default () => {
             subtitle={steps[current]?.subtitle}
             steps={steps}
             title={steps[current]?.title}
+            onSave={handleSaveData}
             onDone={handleDone}
             onPrevious={handlePrevious}
             onNext={handleNext}
