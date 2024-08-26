@@ -12,9 +12,16 @@ import './styles.css'
 
 const tutorial = {
   title: `Intro`,
-  description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
+  description: 'To understand the full range of positive impacts associated with an EBF project, we start with the people behind the project and the communities that benefit from their work. \n' +
+    '\n' +
+    'By asking the right questions we can learn not only about the problems their project seeks to solve, but also how they intend to achieve their project’s stated outcomes. \n' +
+    '\n' +
+    'This onboarding will also help to unlock “unanticipated” benefits their project may offer, from providing jobs, reducing poverty, or even access to vital services like education. Improvements in air and water quality, for example, can contribute to a healthier environment, leading to improved overall health for the community.\n' +
+    '\n' +
+    'Additionally, by addressing equity and social empowerment, marginalized groups like women, Indigenous communities, and vulnerable populations can also be positively impacted by projects that have identified the right objectives for their work. When everyone is involved and empowered, regardless of their background, the positive impacts of any EBF project become even more meaningful.',
+  intro: true,
   backgroundColor: 'black',
-  subtitle: `Lorem Ipsum is simply dummy text of the printing and typesetting industry.`,
+  subtitle: '',
   questions: []
 }
 
@@ -83,7 +90,6 @@ export default () => {
 
     const isValid = stepStatuses.every(status => status === 'finish')
     await updateSurvey(surveyId, {isValid})
-    console.log(stepStatuses, isValid)
   }
 
   const validateQuestions = (questions) => questions.some(q => q.required && q.answer === '')
@@ -102,6 +108,11 @@ export default () => {
   const handlePrevious = async (newQuestions) => {
     await handleSaveData(newQuestions)
     setCurrent(current - 1)
+  }
+
+  const handleDone = async (newQuestions) => {
+    await handleSaveData(newQuestions)
+    handleReturnPage()
   }
 
   const handleReturnPage = () => {
@@ -126,11 +137,13 @@ export default () => {
           <Step
             backgroundColor={steps[current]?.backgroundColor}
             current={current}
+            intro={steps[current]?.intro}
             description={steps[current]?.description}
             questions={steps[current]?.questions}
             subtitle={steps[current]?.subtitle}
             steps={steps}
             title={steps[current]?.title}
+            onDone={handleDone}
             onPrevious={handlePrevious}
             onNext={handleNext}
           />

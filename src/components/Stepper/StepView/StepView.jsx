@@ -2,13 +2,19 @@ import Markdown from "markdown-to-jsx";
 import StepperNavigation from "../StepperNavigation/StepperNavigation";
 import {Descriptions} from "antd";
 
-export default ({backgroundColor, current, questions, steps, title, description, subtitle, onNext, onPrevious}) => {
+export default ({backgroundColor, current, questions, steps, title, description, subtitle, onDone, onNext, onPrevious}) => {
 
   const handleClick = (dir) => {
     if(dir === 'previous') {
       onPrevious()
-    } else {
+    }
+
+    if(dir === 'next') {
       onNext()
+    }
+
+    if(dir === 'done') {
+      onDone()
     }
   }
 

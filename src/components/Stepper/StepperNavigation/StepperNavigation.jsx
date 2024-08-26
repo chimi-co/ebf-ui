@@ -1,4 +1,4 @@
-import {Button, message} from "antd";
+import {Button} from 'antd'
 
 export default ({current, steps, onClick, isLoading}) => (
   <div className="flex justify-end">
@@ -7,15 +7,15 @@ export default ({current, steps, onClick, isLoading}) => (
         PREVIOUS
       </Button>
     )}
-    {current < steps && (
-      <Button loading={isLoading}  type="primary" onClick={() => onClick('next')}>
+    {(current < steps && current !== steps - 1) && (
+      <Button loading={isLoading} type="primary" onClick={() => onClick('next')}>
         NEXT
       </Button>
     )}
-    {/*{current === steps - 1 && (*/}
-    {/*  <Button type="primary" onClick={() => message.success('Processing complete!')}>*/}
-    {/*    Done*/}
-    {/*  </Button>*/}
-    {/*)}*/}
+    {current === steps - 1 && (
+      <Button type="primary" onClick={() => onClick('done')}>
+        SURVEYS
+      </Button>
+    )}
   </div>
 )
