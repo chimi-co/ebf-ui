@@ -2273,11 +2273,6 @@ export const STEPS = [
         answer: '',
         required: true,
       },
-      {
-        label: '',
-        answer: '',
-        required: true,
-      },
     ]
   },
   {
@@ -2305,11 +2300,6 @@ export const STEPS = [
       {
         label: 'C.6 Has stakeholder engagement and community involvement been incorporated into environmental safeguards for the project? \n' +
           '*[EXAMPLE: has a renewable energy project that involves building a hydroelectric dam implemented measures to address potential displacement of local communities, loss of livelihoods, or negative impacts on downstream ecosystems, such as conducting proper social and environmental impact assessments, engaging with local stakeholders, and implementing compensation or mitigation measures?]*',
-        answer: '',
-        required: true,
-      },
-      {
-        label: '',
         answer: '',
         required: true,
       },
