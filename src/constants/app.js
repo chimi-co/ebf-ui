@@ -1359,7 +1359,8 @@ export const STEPS = [
     subtitle: `Put answers inside boxes below. Use the box at left if additional space is required.`,
     questions: [
       {
-        label: `C`,
+        label: `A.3 [Make sure to note if that is a voluntary registry like Verra, Gold Standard or Regen, or if it is a regulatory
+            registry associated with things like CORSIA, Article 6 of the Paris Agreement, or the CDM]`,
         answer: '',
         required: true,
       },
